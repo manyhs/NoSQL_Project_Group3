@@ -1,0 +1,46 @@
+@* Author: Mariana da Costa Reis & Cristhel Mae Solomon *@
+@model HomeViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>NoDesk – data layer test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>NoDesk – data layer test</h1>
+    <p>Employees in database: @Model.EmployeeCount</p>
+
+    <h2>Dashboard (all tickets: @Model.Stats.Total)</h2>
+    <ul>
+        <li>Open: @Model.Stats.Open (@Model.Stats.OpenPercentage%)</li>
+        <li>Resolved: @Model.Stats.Resolved (@Model.Stats.ResolvedPercentage%)</li>
+        <li>Closed without resolve: @Model.Stats.Closed (@Model.Stats.ClosedPercentage%)</li>
+        <li>Open tickets past their deadline: @Model.Stats.PastDeadline</li>
+    </ul>
+
+    <h2>Tickets</h2>
+    <table>
+        <tr><th>Created</th><th>Subject</th><th>Reported by</th><th>Priority</th><th>Deadline</th><th>Status</th></tr>
+        @foreach (var t in Model.Tickets)
+        {
+            <tr>
+                <td>@t.CreationDate.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@t.Subject</td>
+                <td>@(t.Reporter?.FullName ?? "(deleted employee)")</td>
+                <td>@t.Priority</td>
+                <td>@t.Deadline.ToString("yyyy-MM-dd")</td>
+                <td>@t.Status</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
