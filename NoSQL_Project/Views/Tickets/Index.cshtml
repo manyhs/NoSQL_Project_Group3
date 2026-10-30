@@ -1,0 +1,106 @@
+@* Author: Mani Hassani *@
+@model TicketListViewModel
+@{
+    ViewData["Title"] = "Overview tickets";
+    var isServiceDesk = User.IsServiceDesk();
+    var now = DateTime.UtcNow;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="page-title mb-0">Overview tickets</h1>
+        <div class="text-muted">@(isServiceDesk ? "All tickets of all employees" : "Your own tickets")</div>
+    </div>
+    <a asp-controller="TicketEditor" asp-action="Create" class="btn btn-nodesk">Create incident</a>
+</div>
+
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    @if (isServiceDesk)
+    {
+        <div class="col-md">
+            <input type="text" name="email" value="@Model.Email" class="form-control" placeholder="Filter by email" />
+        </div>
+    }
+    <partial name="_KeywordFilter" />
+    <input type="hidden" name="sort" value="@Model.Sort" />
+    <div class="col-md-auto">
+        <button type="submit" class="btn btn-nodesk">Filter</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <a asp-action="Index" asp-route-sort="@TicketSorter.NextSort(Model.Sort)" asp-route-email="@Model.Email" asp-route-keywords="@Model.Keywords" class="btn btn-outline-nodesk">
+        @TicketSorter.ButtonText(Model.Sort)
+    </a>
+    @if (Model.Sort != null)
+    {
+        <a asp-action="Index" asp-route-email="@Model.Email" asp-route-keywords="@Model.Keywords" class="btn btn-link link-nodesk">Default order (newest first)</a>
+    }
+</div>
+
+@if (Model.Message != null)
+{
+    <div class="alert alert-warning">@Model.Message</div>
+}
+
+@if (Model.Tickets.Count == 0)
+{
+    <div class="alert alert-light border">No tickets found.</div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover table-nodesk align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>
+                            <a asp-action="Index" asp-route-sort="@TicketSorter.NextSort(Model.Sort)" asp-route-email="@Model.Email" asp-route-keywords="@Model.Keywords" class="sort-link" title="Sort by priority">
+                                Priority @TicketSorter.Arrow(Model.Sort)
+                            </a>
+                        </th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        @if (isServiceDesk)
+                        {
+                            <th></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Tickets.Count; i++)
+                    {
+                        var ticket = Model.Tickets[i];
+                        var overdue = ticket.Status == TicketStatus.Open && ticket.Deadline < now;
+                        <tr class="@(overdue ? "overdue" : "")">
+                            <td>@(i + 1)</td>
+                            <td>
+                                @ticket.Subject
+                                @if (ticket.IsEscalated)
+                                {
+                                    <span class="badge bg-danger ms-1">Escalated</span>
+                                }
+                            </td>
+                            <td>@(ticket.Reporter?.FullName ?? "(deleted employee)")</td>
+                            <td>@(ticket.CreationDate.ToLocalTime().ToString("dd-MM-yyyy HH:mm"))</td>
+                            <td>@ticket.Priority</td>
+                            <td class="@(overdue ? "text-danger fw-semibold" : "")">@(ticket.Deadline.ToLocalTime().ToString("dd-MM-yyyy"))</td>
+                            <td><span class="badge @StatusBadge.CssClass(ticket.Status)">@ticket.Status</span></td>
+                            @if (isServiceDesk)
+                            {
+                                <td class="text-end">
+                                    <a asp-controller="TicketEditor" asp-action="Edit" asp-route-id="@ticket.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">Showing @Model.Tickets.Count ticket(s). Red rows are open tickets past their deadline.</p>
+}

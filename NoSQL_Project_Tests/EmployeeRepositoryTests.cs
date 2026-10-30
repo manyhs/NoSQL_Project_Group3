@@ -9,9 +9,15 @@ namespace NoSQL_Project_Tests
     public class EmployeeRepositoryTests
     {
         private EmployeeRepository _repo = null!;
+        private TicketRepository _tickets = null!;
 
         [SetUp]
-        public void SetUp() => _repo = new EmployeeRepository(TestDatabase.GetCleanDatabase());
+        public void SetUp()
+        {
+            var db = TestDatabase.GetCleanDatabase();
+            _repo = new EmployeeRepository(db);
+            _tickets = new TicketRepository(db);
+        }
 
         private static Employee NewEmployee(string email) => new()
         {
@@ -99,6 +105,23 @@ namespace NoSQL_Project_Tests
             Assert.That(_repo.Login("login@tgg.nl", "Correct1"), Is.Not.Null);
             Assert.That(_repo.Login("login@tgg.nl", "Wrong"), Is.Null);
             Assert.That(_repo.Login("unknown@tgg.nl", "Correct1"), Is.Null);
+        }
+
+        [Test]
+        public void GetAllWithTicketCount_CountsTicketsPerEmployee()
+        {
+            var withTickets = NewEmployee("tickets@tgg.nl");
+            var withoutTickets = NewEmployee("none@tgg.nl");
+            _repo.Create(withTickets, "a");
+            _repo.Create(withoutTickets, "b");
+            _tickets.Create(new Ticket { EmployeeId = withTickets.Id!, Subject = "First", Description = "Test" });
+            _tickets.Create(new Ticket { EmployeeId = withTickets.Id!, Subject = "Second", Description = "Test" });
+
+            var result = _repo.GetAllWithTicketCount();
+
+            Assert.That(result.Single(e => e.Email == "tickets@tgg.nl").TicketCount, Is.EqualTo(2));
+            Assert.That(result.Single(e => e.Email == "none@tgg.nl").TicketCount, Is.EqualTo(0));
+            Assert.That(result.All(e => e.PasswordHash == ""), Is.True);
         }
     }
 }

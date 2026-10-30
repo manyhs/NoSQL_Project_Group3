@@ -1,0 +1,19 @@
+@* Author: Cristhel Mae Solomon *@
+@model UserFormViewModel
+@{
+    ViewData["Title"] = "Create new user";
+}
+<h1 class="page-title mb-3">Create new user</h1>
+
+<div class="card shadow-sm form-card">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <partial name="_UserFields" />
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-nodesk">Add user</button>
+            </div>
+        </form>
+    </div>
+</div>

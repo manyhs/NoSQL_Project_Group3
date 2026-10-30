@@ -7,6 +7,8 @@ namespace NoSQL_Project.Repositories.Interfaces
     {
         List<Employee> GetAll();
 
+        List<EmployeeWithTicketCount> GetAllWithTicketCount();
+
         Employee? GetById(string id);
 
         Employee? GetByEmail(string email);

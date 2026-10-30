@@ -18,6 +18,19 @@ namespace NoSQL_Project.Repositories
         public List<Employee> GetAll() =>
             _employees.Find(_ => true).SortBy(e => e.LastName).ToList();
 
+        public List<EmployeeWithTicketCount> GetAllWithTicketCount()
+        {
+            var pipeline = new List<BsonDocument>
+            {
+                BsonDocument.Parse("{ $lookup: { from: 'Tickets', localField: '_id', foreignField: 'Employee_ID', as: 'Tickets' } }"),
+                BsonDocument.Parse("{ $addFields: { TicketCount: { $size: '$Tickets' } } }"),
+                BsonDocument.Parse("{ $project: { Tickets: 0, PasswordHash: 0 } }"),
+                BsonDocument.Parse("{ $sort: { LastName: 1, FirstName: 1 } }")
+            };
+
+            return _employees.Aggregate<EmployeeWithTicketCount>(pipeline).ToList();
+        }
+
         public Employee? GetById(string id)
         {
             if (!ObjectId.TryParse(id, out _))

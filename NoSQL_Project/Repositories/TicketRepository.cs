@@ -44,9 +44,11 @@ namespace NoSQL_Project.Repositories
         public void Create(Ticket ticket)
         {
             ticket.Status = TicketStatus.Open;
-            ticket.CreationDate = DateTime.UtcNow;
             ticket.SolutionDate = null;
             ticket.HandledBy = null;
+
+            if (ticket.CreationDate == default)
+                ticket.CreationDate = DateTime.UtcNow;
 
             if (ticket.Deadline == default)
                 ticket.Deadline = ticket.CreationDate.AddDays(7);

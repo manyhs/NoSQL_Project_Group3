@@ -1,7 +1,9 @@
 // Author: Mariana da Costa Reis & Cristhel Mae Solomon
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MongoDB.Driver;
 using NoSQL_Project.Database;
 using NoSQL_Project.Demo;
+using NoSQL_Project.Features;
 using NoSQL_Project.Repositories;
 using NoSQL_Project.Repositories.Interfaces;
 
@@ -27,6 +29,16 @@ namespace NoSQL_Project
 
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<TicketTransferService>();
+            builder.Services.AddScoped<TicketEscalationService>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(14);
+                });
 
             builder.Services.AddControllersWithViews();
 
@@ -45,10 +57,14 @@ namespace NoSQL_Project
                 }
             }
 
+            app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
             app.Run();
         }

@@ -1,0 +1,68 @@
+@* Author: Cristhel Mae Solomon *@
+@model UserFormViewModel
+<div class="row mb-3">
+    <label asp-for="FirstName" class="col-sm-4 col-form-label">First name</label>
+    <div class="col-sm-8">
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="LastName" class="col-sm-4 col-form-label">Last name</label>
+    <div class="col-sm-8">
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="UserType" class="col-sm-4 col-form-label">Type of user</label>
+    <div class="col-sm-8">
+        <select asp-for="UserType" class="form-select">
+            <option value="@UserTypes.Employee">Employee</option>
+            <option value="@UserTypes.ServiceDesk">Service Desk Employee</option>
+        </select>
+        <span asp-validation-for="UserType" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="Email" class="col-sm-4 col-form-label">E-mail address</label>
+    <div class="col-sm-8">
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="PhoneNumber" class="col-sm-4 col-form-label">Phone number</label>
+    <div class="col-sm-8">
+        <input asp-for="PhoneNumber" class="form-control" />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="Location" class="col-sm-4 col-form-label">Location/branch</label>
+    <div class="col-sm-8">
+        <select asp-for="Location" class="form-select">
+            @foreach (var location in UserFormViewModel.Locations)
+            {
+                <option value="@location">@location</option>
+            }
+        </select>
+        <span asp-validation-for="Location" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label asp-for="Password" class="col-sm-4 col-form-label">@(Model.Id == null ? "Starting password" : "New password")</label>
+    <div class="col-sm-8">
+        <input asp-for="Password" class="form-control" />
+        @if (Model.Id != null)
+        {
+            <div class="form-text">Leave empty to keep the current password.</div>
+        }
+        <span asp-validation-for="Password" class="text-danger small"></span>
+    </div>
+</div>

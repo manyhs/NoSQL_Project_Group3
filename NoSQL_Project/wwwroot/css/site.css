@@ -1,0 +1,149 @@
+/* Author: Mani Hassani */
+:root {
+    --nodesk-green: #2e7d32;
+    --nodesk-green-dark: #1b5e20;
+    --nodesk-green-light: #e8f5e9;
+}
+
+body {
+    background: #f5f7f5;
+}
+
+.nodesk-header {
+    background: var(--nodesk-green);
+    color: #fff;
+}
+
+.brand-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.brand-license {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.nodesk-nav {
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nodesk-nav .nav-link {
+    color: #444;
+    font-weight: 500;
+    padding: 0.8rem 1.1rem;
+    border-bottom: 3px solid transparent;
+}
+
+.nodesk-nav .nav-link:hover {
+    color: var(--nodesk-green);
+}
+
+.nodesk-nav .nav-link.active {
+    color: var(--nodesk-green);
+    border-bottom-color: var(--nodesk-green);
+}
+
+.btn-nodesk {
+    background: var(--nodesk-green);
+    border-color: var(--nodesk-green);
+    color: #fff;
+}
+
+.btn-nodesk:hover,
+.btn-nodesk:focus {
+    background: var(--nodesk-green-dark);
+    border-color: var(--nodesk-green-dark);
+    color: #fff;
+}
+
+.btn-outline-nodesk {
+    color: var(--nodesk-green);
+    border-color: var(--nodesk-green);
+    background: #fff;
+}
+
+.btn-outline-nodesk:hover,
+.btn-outline-nodesk:focus {
+    background: var(--nodesk-green);
+    border-color: var(--nodesk-green);
+    color: #fff;
+}
+
+.table-nodesk th a.sort-link {
+    color: var(--nodesk-green);
+}
+
+.table-nodesk th a.sort-link:hover {
+    text-decoration: underline;
+}
+
+.link-nodesk {
+    color: var(--nodesk-green);
+    cursor: pointer;
+}
+
+.login-card {
+    max-width: 440px;
+}
+
+.form-card {
+    max-width: 720px;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.donut {
+    --donut-color: var(--nodesk-green);
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(var(--donut-color) calc(var(--percentage) * 1%), #e9ecef 0);
+}
+
+.donut span {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    color: #555;
+}
+
+.tile-open { --donut-color: #f59f00; }
+.tile-resolved { --donut-color: #2e7d32; }
+.tile-closed { --donut-color: #868e96; }
+.tile-deadline { --donut-color: #d32f2f; }
+
+.card-tile.tile-open { border-top: 4px solid #f59f00; }
+.card-tile.tile-resolved { border-top: 4px solid #2e7d32; }
+.card-tile.tile-closed { border-top: 4px solid #868e96; }
+.card-tile.tile-deadline { border-top: 4px solid #d32f2f; }
+
+.table-nodesk thead th {
+    background: var(--nodesk-green-light);
+    white-space: nowrap;
+}
+
+.table-nodesk th a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.table-nodesk tr.overdue td {
+    background: #fff5f5;
+}

@@ -1,0 +1,45 @@
+@* Author: Cristhel Mae Solomon *@
+@model TicketFormViewModel
+<div class="card shadow-sm border-danger-subtle">
+    <div class="card-header bg-white fw-semibold">Escalate / close</div>
+    <div class="card-body">
+        @if (Model.IsEscalated)
+        {
+            <div class="alert alert-danger small">
+                Escalated to management on @(Model.EscalationDate?.ToString("dd-MM-yyyy HH:mm")).<br />
+                Reason: @Model.EscalationReason
+            </div>
+        }
+
+        @if (Model.Status != TicketStatus.Open)
+        {
+            <p class="small text-muted mb-0">Only open tickets can be escalated or closed here.</p>
+        }
+        else
+        {
+            if (Model.EscalationRecommended)
+            {
+                <div class="alert alert-warning small">
+                    <strong>Recommended:</strong> this is a high-priority ticket that is past its deadline. Consider sending it to management.
+                </div>
+            }
+
+            if (!Model.IsEscalated)
+            {
+                <form asp-controller="Escalation" asp-action="Escalate" method="post" class="mb-3">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <label class="form-label small" for="escalateReason">Why should management look at this?</label>
+                    <textarea id="escalateReason" name="reason" rows="2" class="form-control mb-2"></textarea>
+                    <button type="submit" class="btn btn-danger btn-sm">Escalate to management</button>
+                </form>
+            }
+
+            <form asp-controller="Escalation" asp-action="Close" method="post" onsubmit="return confirm('Close this ticket without solving it?');">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <label class="form-label small" for="closeReason">Why is it closed without a solution?</label>
+                <textarea id="closeReason" name="reason" rows="2" class="form-control mb-2"></textarea>
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Close without resolving</button>
+            </form>
+        }
+    </div>
+</div>

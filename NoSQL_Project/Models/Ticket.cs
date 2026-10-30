@@ -37,5 +37,13 @@ namespace NoSQL_Project.Models
         public DateTime? SolutionDate { get; set; }
 
         public HandledBy? HandledBy { get; set; }
+
+        public bool IsEscalated { get; set; }
+
+        [BsonElement("Escalation_Date")]
+        public DateTime? EscalationDate { get; set; }
+
+        [BsonElement("Escalation_Reason")]
+        public string? EscalationReason { get; set; }
     }
 }

@@ -1,0 +1,72 @@
+@* Author: Mani Hassani *@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var loggedIn = User.Identity?.IsAuthenticated == true;
+    var ticketPages = new[] { "Tickets", "TicketEditor", "Escalation" };
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NoDesk – @ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="nodesk-header">
+        <div class="container d-flex justify-content-between align-items-center py-3">
+            <a asp-controller="Dashboard" asp-action="Index" class="text-decoration-none text-white">
+                <div class="brand-name">NoDesk</div>
+                <div class="brand-license">Licensed to: The Garden Group</div>
+            </a>
+            @if (loggedIn)
+            {
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end small">
+                        <div class="fw-semibold">@User.Identity!.Name</div>
+                        <div class="opacity-75">@(User.IsServiceDesk() ? "Service Desk Employee" : "Employee")</div>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-light">Log out</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </header>
+
+    @if (loggedIn)
+    {
+        <nav class="nodesk-nav">
+            <div class="container">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link @(controller == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ticketPages.Contains(controller) ? "active" : "")" asp-controller="Tickets" asp-action="Index">Incident Management</a>
+                    </li>
+                    @if (User.IsServiceDesk())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @(controller == "Users" ? "active" : "")" asp-controller="Users" asp-action="Index">User Management</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    }
+
+    <main class="container py-4">
+        @if (TempData["Message"] is string message)
+        {
+            <div class="alert alert-success">@message</div>
+        }
+        @if (TempData["Error"] is string error)
+        {
+            <div class="alert alert-danger">@error</div>
+        }
+        @RenderBody()
+    </main>
+</body>
+</html>
